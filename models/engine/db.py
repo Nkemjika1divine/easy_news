@@ -44,7 +44,7 @@ class DB:
             except Exception:
                 print("There is no table in the database")
     
-    
+
     def all(self, cls=None) -> Dict[str, any]:
         """query on the current database session"""
         result = {}
@@ -60,3 +60,8 @@ class DB:
                     key = class_name + "." + obj.id
                     result[key] = obj
         return result
+    
+
+    def save(self) -> None:
+        """commit all changes of the database"""
+        self.__session.commit()
