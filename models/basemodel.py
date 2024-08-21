@@ -47,4 +47,6 @@ class BaseModel:
         return copy
     
 
-    
+    def __str__(self) -> str:
+        """Returns a string representation of the object"""
+        return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
