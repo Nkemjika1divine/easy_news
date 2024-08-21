@@ -65,3 +65,8 @@ class DB:
     def save(self) -> None:
         """commit all changes of the database"""
         self.__session.commit()
+    
+    def delete(self, obj=None) -> None:
+        """delete from the database"""
+        if obj:
+            self.__session.delete(obj)
