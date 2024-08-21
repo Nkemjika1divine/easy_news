@@ -96,3 +96,8 @@ class DB:
                 if value_dict[key] == value:
                     list_of_objs.append(obj_value)
         return list_of_objs
+    
+
+    def new(self, obj) -> None:
+        """add an object to the database"""
+        self.__session.add(obj)
