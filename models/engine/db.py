@@ -100,4 +100,9 @@ class DB:
 
     def new(self, obj) -> None:
         """add an object to the database"""
+        if obj.__class__.__name__ == "User":
+            hashed = obj.hash_password(obj.password)
+            if not hashed:
+                raise ValueError()
+            setattr(obj, "password", hashed)
         self.__session.add(obj)
