@@ -34,4 +34,17 @@ class BaseModel:
             self.time_updated = datetime.now()
     
 
+    def to_dict(self) -> Dict[str, any]:
+        """Returns a dictionary representation of the object"""
+        copy = self.__dict__.copy()
+        copy['__class__'] = self.__class__.__name__
+        if 'time_created' in copy:
+            copy['time_created'] = self.time_created.isoformat()
+        if 'time_updated' in copy:
+            copy['time_updated'] = self.time_updated.isoformat()
+        if "_sa_instance_state" in copy:
+            del copy["_sa_instance_state"]
+        return copy
+    
+
     
