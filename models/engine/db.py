@@ -66,7 +66,7 @@ class DB:
         """commit all changes of the database"""
         self.__session.commit()
     
-    
+
     def delete(self, obj=None) -> None:
         """delete an object from the database"""
         if obj:
@@ -79,3 +79,20 @@ class DB:
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
+    
+
+    def search_key_value(self, classname: str = None, key: str = None, value: str = None) -> List[TypeVar('BaseModel')]:
+        """Search the database for a value based on the key (also column name)"""
+        from models import storage
+        if not key or not value:
+            return []
+        if type(key) is not str or type(value) is not str:
+            return []
+        list_of_objs = []
+        all_data = storage.all(classname)
+        for obj_value in all_data.values():
+            value_dict = obj_value.to_dict()
+            if key in value_dict:
+                if value_dict[key] == value:
+                    list_of_objs.append(obj_value)
+        return list_of_objs
