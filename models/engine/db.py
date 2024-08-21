@@ -66,7 +66,16 @@ class DB:
         """commit all changes of the database"""
         self.__session.commit()
     
+    
     def delete(self, obj=None) -> None:
-        """delete from the database"""
+        """delete an object from the database"""
         if obj:
             self.__session.delete(obj)
+    
+
+    def reload(self) -> None:
+        """reloads from the database"""
+        Base.metadata.create_all(self.__engine)
+        sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = scoped_session(sess_factory)
+        self.__session = Session
