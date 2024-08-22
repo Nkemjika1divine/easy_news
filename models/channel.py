@@ -8,7 +8,7 @@ class Channel(BaseModel, Base):
     """The Channel Model"""
     __tablename__ = "channels"
     name = Column(String(50), nullable=False)
-    tag = Column(String(50), nullable=False)
+    source = Column(String(50), nullable=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
