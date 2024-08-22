@@ -9,3 +9,10 @@ class Unauthorized(HTTPException):
     def __init__(self, detail: str = None) -> None:
         super().__init__(status_code=HTTP_401_UNAUTHORIZED,
                          detail=detail if detail else "Unauthorized")
+
+
+class Forbidden(HTTPException):
+    """Handles Forbidden access"""
+    def __init__(self, detail: str = None) -> None:
+        super().__init__(status_code=HTTP_403_FORBIDDEN,
+                         detail=detail if detail else "Forbidden")
