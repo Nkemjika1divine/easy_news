@@ -12,6 +12,8 @@ class User(BaseModel, Base):
     name = Column(String(50), nullable=False)
     email = Column(String(50), nullable=False, unique=True)
     password = Column(String(250), nullable=False)
+    reset_token = Column(String(250), nullable=True)
+    email_verified = Column(String(10), nullable=False, default="no")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -45,3 +47,14 @@ class User(BaseModel, Base):
         user[0].reset_token = token
         user[0].save()
         return token
+    
+
+    def update_password(self, token: str = None, password: str = None) -> None:
+        """Updates a user's password"""
+        from models import storage
+        user = storage.search_key_value("User", "reset_token", token)
+        if not user:
+            raise ValueError()
+        user = user[0]
+        user.password = self.hash_password(password)
+        user.reset_token = None
