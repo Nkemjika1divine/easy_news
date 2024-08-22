@@ -2,6 +2,7 @@
 """Module for Authentication"""
 from fastapi import Request
 from models.session import Session
+from os import environ
 from typing import Dict, TypeVar
 
 
@@ -69,3 +70,11 @@ class Auth():
         """Retrieves the authorization header from a request"""
         headers = await self.get_request_header(request)
         return headers.get("Authorization", None)
+    
+
+    def session_cookie(self, request: Request):
+        """Returns a session id from a request's cookie"""
+        if not request:
+            return None
+        my_session_id = environ.get("SESSION_NAME", None)
+        return request.cookies.get(my_session_id)
