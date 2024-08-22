@@ -2,7 +2,8 @@
 """The User module"""
 from bcrypt import hashpw, checkpw, gensalt
 from models.basemodel import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String
+from utils.utility import generate_token
 
 
 class User(BaseModel, Base):
@@ -30,3 +31,17 @@ class User(BaseModel, Base):
         if self.password is None:
             return False
         return checkpw(password.encode("utf-8"), self.password.encode("utf-8"))
+    
+
+    def generate_password_token(self, user_id: str = None) -> str:
+        """Generated a password token using uuid"""
+        from models import storage
+        if not user_id or type(user_id) is not str:
+            return None
+        user = storage.search_key_value("User", "id", user_id)
+        if not user:
+            raise ValueError()
+        token = generate_token()
+        user[0].reset_token = token
+        storage.save()
+        return token
