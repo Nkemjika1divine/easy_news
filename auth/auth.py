@@ -20,3 +20,14 @@ class Auth():
             session.save()
             return session.id
         return None
+    
+
+    def get_user_id_using_session_id(self, session_id: str = None) -> str:
+        """Returns a user based on Session ID"""
+        from models import storage
+        if session_id is None or type(session_id) is not str:
+            return None
+        session = storage.search_key_value("Session", "id", session_id)
+        if session:
+            return session[0].user_id
+        return None
