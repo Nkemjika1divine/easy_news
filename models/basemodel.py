@@ -50,3 +50,11 @@ class BaseModel:
     def __str__(self) -> str:
         """Returns a string representation of the object"""
         return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)
+    
+
+    def save(self) -> None:
+        """Saves a new object"""
+        from models import storage
+        self.time_updated = datetime.now()
+        storage.new(self)
+        storage.save()

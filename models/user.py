@@ -43,5 +43,5 @@ class User(BaseModel, Base):
             raise ValueError()
         token = generate_token()
         user[0].reset_token = token
-        storage.save()
+        user[0].save()
         return token
