@@ -2,6 +2,7 @@
 """The Database Module"""
 from dotenv import load_dotenv
 from models.basemodel import Base
+from models.user import User
 from os import environ
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -11,7 +12,9 @@ from typing import Dict, TypeVar, List
 load_dotenv()
 
 
-classes = {} # will contain all models
+classes = {
+    "User": User
+} # will contain all models
 
 
 class DB:
