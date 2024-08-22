@@ -23,3 +23,10 @@ class Not_Found(HTTPException):
     def __init__(self, detail: str = None) -> None:
         super().__init__(status_code=HTTP_404_NOT_FOUND,
                          detail=detail if detail else "Not Found")
+
+
+class Bad_Request(HTTPException):
+    """Handles Bad requests or incomplete request"""
+    def __init__(self, detail: str = None) -> None:
+        super().__init__(status_code=HTTP_400_BAD_REQUEST,
+                         detail=detail if detail else "Incomplete Request")
