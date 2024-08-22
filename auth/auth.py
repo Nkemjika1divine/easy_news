@@ -63,3 +63,9 @@ class Auth():
                             if path[0:count - 1] == paths[0:-1]:
                                 return False
                 return True
+    
+
+    async def get_authorization_header(self, request: Request) -> str:
+        """Retrieves the authorization header from a request"""
+        headers = await self.get_request_header(request)
+        return headers.get("Authorization", None)
