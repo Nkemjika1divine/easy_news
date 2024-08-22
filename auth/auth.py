@@ -2,7 +2,7 @@
 """Module for Authentication"""
 from fastapi import Request
 from models.session import Session
-from typing import TypeVar
+from typing import Dict, TypeVar
 
 
 class Auth():
@@ -31,3 +31,11 @@ class Auth():
         if session:
             return session[0].user_id
         return None
+
+    
+    async def get_request_header(self, request: Request) -> Dict:
+        """Accesses header in the user's request"""
+        if request:
+            return request.headers
+        else:
+            return {}

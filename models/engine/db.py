@@ -5,6 +5,7 @@ from models.basemodel import Base
 from models.channel import Channel
 from models.follow import Follow
 from models.notification import Notification
+from models.session import Session
 from models.user import User
 from os import environ
 from sqlalchemy import create_engine
@@ -19,6 +20,7 @@ classes = {
     "Channel": Channel,
     "Follow": Follow,
     "Notification": Notification,
+    "Session": Session,
     "User": User
 } # will contain all models
 
