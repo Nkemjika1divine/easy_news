@@ -78,3 +78,20 @@ class Auth():
             return None
         my_session_id = environ.get("SESSION_NAME", None)
         return request.cookies.get(my_session_id)
+    
+
+    def check_for_current_user(self, request: Request) -> TypeVar("User"):
+        """Checks if a request is from a current user in the database and returns the user"""
+        from models import storage
+        if not request:
+            return None
+        session_id = self.session_cookie(request)
+        if not session_id:
+            return None
+        session = storage.search_key_value("Session", "id", session_id)
+        if not session:
+            return None
+        user = storage.search_key_value("User", "id", session[0].user_id)
+        if not user:
+            return None
+        return user[0]
