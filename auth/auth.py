@@ -95,3 +95,20 @@ class Auth():
         if not user:
             return None
         return user[0]
+    
+
+    def current_user(self, request: Request) -> TypeVar("User"):
+        """Returns a user instance based on cookie value"""
+        from models import storage
+        if not request:
+            return None
+        session_id = self.session_cookie(request)
+        if not session_id:
+            return None
+        session = storage.search_key_value("Session", "id", session_id)
+        if not session:
+            return None
+        user = storage.search_key_value("User", "id", session[0].user_id)
+        if not user:
+            return None
+        return user[0]
