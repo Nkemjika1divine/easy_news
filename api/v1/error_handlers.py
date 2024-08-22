@@ -16,3 +16,10 @@ class Forbidden(HTTPException):
     def __init__(self, detail: str = None) -> None:
         super().__init__(status_code=HTTP_403_FORBIDDEN,
                          detail=detail if detail else "Forbidden")
+
+
+class Not_Found(HTTPException):
+    """Handles Not found error"""
+    def __init__(self, detail: str = None) -> None:
+        super().__init__(status_code=HTTP_404_NOT_FOUND,
+                         detail=detail if detail else "Not Found")
