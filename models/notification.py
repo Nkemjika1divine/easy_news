@@ -11,7 +11,7 @@ class Notification(BaseModel, Base):
     channel_id = Column(String(50), ForeignKey("channels.id", ondelete='CASCADE'), nullable=False)
     article_title = Column(String(500), nullable=False)
     article_description = Column(String(1000), nullable=True)
-    article_url = Column(String(1000), nullable=False)
+    article_url = Column(String(200), nullable=False)
 
 
     def __init__(self, *args, **kwargs):

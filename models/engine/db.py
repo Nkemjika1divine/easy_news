@@ -2,6 +2,9 @@
 """The Database Module"""
 from dotenv import load_dotenv
 from models.basemodel import Base
+from models.channel import Channel
+from models.follow import Follow
+from models.notification import Notification
 from models.user import User
 from os import environ
 from sqlalchemy import create_engine
@@ -13,6 +16,9 @@ load_dotenv()
 
 
 classes = {
+    "Channel": Channel,
+    "Follow": Follow,
+    "Notification": Notification,
     "User": User
 } # will contain all models
 
