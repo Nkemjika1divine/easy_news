@@ -47,6 +47,27 @@ class BaseModel:
         return copy
     
 
+    def to_safe_dict(self) -> Dict[str, any]:
+        """returns a dictionary without sensitive information"""
+        from models import storage
+        copy = self.__dict__.copy()
+        if 'time_created' in copy:
+            copy['time_created'] = self.time_created.isoformat()
+        if 'time_updated' in copy:
+            copy['time_updated'] = self.time_updated.isoformat()
+        if 'password' in copy:
+            del copy['password']
+        if "_sa_instance_state" in copy:
+            del copy["_sa_instance_state"]
+        if '__class__' in copy:
+            del copy['__class__']
+        if 'reset_token' in copy:
+            del copy['reset_token']
+        if 'email_verified' in copy:
+            del copy['email_verified']
+        return copy
+    
+
     def __str__(self) -> str:
         """Returns a string representation of the object"""
         return "[{}] ({}) {}".format(self.__class__.__name__, self.id, self.__dict__)

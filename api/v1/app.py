@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 """Module deploying our Easy News FastAPI app"""
+from api.v1.endpoints.users import user_router
 from api.v1.error_handlers import Unauthorized, Forbidden
 from auth.auth import Auth
 from auth.middleware.middleware import AuthMiddleware
@@ -14,10 +15,12 @@ load_dotenv()
 
 app = FastAPI()
 api_prefix = "/api/v1"
+app.include_router(user_router, prefix=api_prefix)
 
 
 path_list = [
              '/docs',
+             '/api/v1/users/register'
              ]
 
 

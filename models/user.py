@@ -10,9 +10,10 @@ class User(BaseModel, Base):
     """The User model"""
     __tablename__ = "users"
     name = Column(String(50), nullable=False)
-    email = Column(String(50), nullable=False, unique=True)
-    password = Column(String(250), nullable=False)
-    reset_token = Column(String(250), nullable=True)
+    email = Column(String(100), nullable=False, unique=True)
+    password = Column(String(20), nullable=False)
+    reset_token = Column(String(50), nullable=True)
+    role = Column(String(10), nullable=False)
     email_verified = Column(String(10), nullable=False, default="no")
 
     def __init__(self, *args, **kwargs):
