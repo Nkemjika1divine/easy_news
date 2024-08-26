@@ -139,7 +139,7 @@ def get_password_reset_token(request: Request) -> str:
     token = user.generate_password_token(user.id)
     if token:
         if user.send_password_token():
-            return JSONResponse(content=("Token successfully sent"))
+            return JSONResponse(content=("Token successfully sent"), status_code=status.HTTP_200_OK)
         raise Server_Error("Failed to send password token")
     raise Server_Error("Failed to generate token")
 
@@ -163,7 +163,9 @@ async def change_password(request: Request) -> str:
     user = request.state.current_user
     user.update_password(password)
     return JSONResponse(content="Password successfully updated", status_code=status.HTTP_200_OK)
+
+
+@user_router.get("/users/profile")
+def get_user_profile(request: Request) -> str:
+    """GET method that returns the user's profile"""
     
-
-
-@user_router.put("/users/send_email_verification_code")
