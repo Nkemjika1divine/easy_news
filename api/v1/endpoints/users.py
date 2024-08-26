@@ -99,6 +99,22 @@ async def confirm_password(request: Request) -> str:
     raise Unauthorized("Password do not match")
 
 
+@user_router.get("/users/get_password_reset_token")
+def get_password_reset_token(request: Request) -> str:
+    """GET method that sends password reset token to the user's email"""
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    user = request.state.current_user
+    token = user.generate_password_token(user.id)
+    if token:
+        if user.send_password_token():
+            return JSONResponse(content=("Token successfully sent"))
+        raise Server_Error("Failed to send password token")
+    raise Server_Error("Failed to generate token")
+
+
 @user_router.put("/users/change_password")
 async def change_password(request: Request) -> str:
     """PUT method that changes a user's password"""

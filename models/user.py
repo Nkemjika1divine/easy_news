@@ -69,7 +69,41 @@ class User(BaseModel, Base):
             server.starttls()
 
             server.login('placerssocials@gmail.com', 'plvp oyzo qjmy eonv')
-            message = "Hi {}...\n\nYour verification token is {}.\n\nUse this to validate your email".format(self.display_name(), self.email_token)
+            message = "Hi {}...\n\nYour verification token is {}.\n\nUse this to validate your email".format(self.name(), self.email_token)
+
+            msg = EmailMessage()
+            msg["Subject"] = "OTP Verifiation"
+            msg["From"] = "placerssocials@gmail.com"
+            msg["To"] = self.email
+            msg.set_content(message)
+
+            server.send_message(msg)
+            return True
+        except smtplib.SMTPAuthenticationError:
+            print("Failed to authenticate with the SMTP server. Check your username and password.")
+        except smtplib.SMTPRecipientsRefused:
+            print("The recipient address was refused by the server.")
+        except smtplib.SMTPSenderRefused:
+            print("The sender address was refused by the server.")
+        except smtplib.SMTPDataError:
+            print("The SMTP server refused the email data.")
+        except smtplib.SMTPConnectError:
+            print("Failed to connect to the SMTP server.")
+        except smtplib.SMTPException as e:
+            print(f"An SMTP error occurred: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+        return False
+    
+
+    def send_password_token(self) -> bool:
+        """sends password token to the user's email"""
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+
+            server.login('placerssocials@gmail.com', 'plvp oyzo qjmy eonv')
+            message = "Hi {}...\n\nYour verification token is {}.\n\nUse this to validate your email".format(self.name(), self.reset_token)
 
             msg = EmailMessage()
             msg["Subject"] = "OTP Verifiation"
