@@ -70,6 +70,7 @@ class User(BaseModel, Base):
 
             server.login('placerssocials@gmail.com', 'plvp oyzo qjmy eonv')
             message = "Hi {}...\n\nYour verification token is {}.\n\nUse this to validate your email".format(self.name(), self.email_token)
+            # Email token is generated whrn the user creates an account
 
             msg = EmailMessage()
             msg["Subject"] = "OTP Verifiation"

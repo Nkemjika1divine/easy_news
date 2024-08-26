@@ -31,7 +31,7 @@ async def register_user(request: Request) -> str:
     if not name or type(name) is not str or len(name) > 50:
         raise Bad_Request("name must be a string and must not exceed 50 characters")
     email = request_body.get("email", None)
-    if not email or type(email) is not str or len(name) > 50:
+    if not email or type(email) is not str or len(email) > 50:
         raise Bad_Request("Email missing or not a string")
     if not validate_email_pattern(email):
         raise Forbidden("Wrong email format")
@@ -77,6 +77,35 @@ async def verify_email(request: Request) -> str:
     user.email_token = None
     storage.save()
     return JSONResponse(content="Email successfully verified", status_code=status.HTTP_200_OK)
+
+
+@user_router.put("/users/change_email")
+async def change_email(request: Request) -> str:
+    from models import storage
+    """PUT method that changes a user's email"""
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    try:
+        request_body = await request.json()
+    except Exception as error:
+        raise Bad_Request(error)
+    email = request_body.get("email", None)
+    if not email or type(email) is not str or len(email) > 50:
+        raise Bad_Request("Email missing or not a string")
+    if not validate_email_pattern(email):
+        raise Forbidden("Wrong email format")
+    existing_user = storage.search_key_value("User", "email", email)
+    if existing_user:
+        raise Forbidden("Email already registered")
+    user = request.state.current_user
+    user.email = email
+    user.email_verified = "no"
+    user.email_token = generate_token()
+    storage.save()
+    user.send_email_token()
+    return JSONResponse(content="Email successfully updated", status_code=status.HTTP_200_OK)
 
 
 @user_router.post("/users/confirm_password")
