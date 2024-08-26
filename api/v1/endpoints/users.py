@@ -99,5 +99,26 @@ async def confirm_password(request: Request) -> str:
     raise Unauthorized("Password do not match")
 
 
-@user_router.put("/users/send_email_verification_code")
+@user_router.put("/users/change_password")
+async def change_password(request: Request) -> str:
+    """PUT method that changes a user's password"""
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    try:
+        request_body = await request.json()
+    except Exception as error:
+        raise Bad_Request(error)
+    password = request_body.get("password", None)
+    if not password or type(password) is not str:
+        raise Bad_Request("Password missing or not a string")
+    if len(password) > 20 or len(password) < 8:
+        raise Bad_Request("Password length must be between 8 to 20 characters")
+    user = request.state.current_user
+    user.update_password(password)
+    return JSONResponse(content="Password successfully updated", status_code=status.HTTP_200_OK)
+    
 
+
+@user_router.put("/users/send_email_verification_code")

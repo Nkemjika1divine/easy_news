@@ -53,15 +53,11 @@ class User(BaseModel, Base):
         return token
     
 
-    def update_password(self, token: str = None, password: str = None) -> None:
+    def update_password(self, password: str = None) -> None:
         """Updates a user's password"""
         from models import storage
-        user = storage.search_key_value("User", "reset_token", token)
-        if not user:
-            raise ValueError()
-        user = user[0]
-        user.password = self.hash_password(password)
-        user.reset_token = None
+        self.password = self.hash_password(password)
+        self.reset_token = None
         storage.save()
     
 
