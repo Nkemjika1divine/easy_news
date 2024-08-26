@@ -6,7 +6,7 @@ from fastapi import APIRouter, Request, status
 from fastapi.responses import JSONResponse
 from models.user import User
 from os import environ
-from utils.utility import validate_email_pattern
+from utils.utility import validate_email_pattern, generate_token
 
 
 user_router = APIRouter()
@@ -42,10 +42,11 @@ async def register_user(request: Request) -> str:
     if not password or type(password) is not str:
         raise Bad_Request("Password missing or not a string")
     if len(password) > 20 or len(password) < 8:
-        raise Bad_Request("Password length must be greater than 7 and less than 21")
-    
-    user = User(name=name, email=email, password=password, role=role)
+        raise Bad_Request("Password length must be between 8 to 20 characters")
+    # Create the user
+    user = User(name=name, email=email, password=password, role=role, email_token=generate_token())
     user.save()
+    user.send_email_token()
     auth = Auth()
     session_id = auth.create_session(user.id)
     expiry_date = datetime.now(timezone.utc) + timedelta(days=30)
@@ -54,4 +55,25 @@ async def register_user(request: Request) -> str:
     return response
 
 
-
+@user_router.post("/users/verify_email")
+async def verify_email(request: Request) -> str:
+    """POST method for email verification"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    try:
+        request_body = await request.json()
+    except Exception as error:
+        raise Bad_Request(error)
+    code = request_body.get("code", None)
+    if not code or type(code) is not str:
+        raise Bad_Request("code missing or not a string")
+    user = request.state.current_user
+    if code != user.email_token:
+        raise Unauthorized("Wrong code entered")
+    user.email_verified = "yes"
+    user.email_token = None
+    storage.save()
+    return JSONResponse(content="Email successfully verified", status_code=status.HTTP_200_OK)

@@ -1,9 +1,11 @@
 #!/usr/bin/python3
 """The User module"""
 from bcrypt import hashpw, checkpw, gensalt
+from email.message import EmailMessage
 from models.basemodel import BaseModel, Base
 from sqlalchemy import Column, String
 from utils.utility import generate_token
+import smtplib
 
 
 class User(BaseModel, Base):
@@ -15,6 +17,7 @@ class User(BaseModel, Base):
     reset_token = Column(String(50), nullable=True)
     role = Column(String(10), nullable=False)
     email_verified = Column(String(10), nullable=False, default="no")
+    email_token = Column(String(10), nullable=True)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -60,3 +63,38 @@ class User(BaseModel, Base):
         user.password = self.hash_password(password)
         user.reset_token = None
         storage.save()
+    
+
+    def send_email_token(self) -> bool:
+        """sends token to the user email"""
+        from models import storage
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.starttls()
+
+            server.login('placerssocials@gmail.com', 'plvp oyzo qjmy eonv')
+            message = "Hi {}...\n\nYour verification token is {}.\n\nUse this to validate your email".format(self.display_name(), self.email_token)
+
+            msg = EmailMessage()
+            msg["Subject"] = "OTP Verifiation"
+            msg["From"] = "placerssocials@gmail.com"
+            msg["To"] = self.email
+            msg.set_content(message)
+
+            server.send_message(msg)
+            return True
+        except smtplib.SMTPAuthenticationError:
+            print("Failed to authenticate with the SMTP server. Check your username and password.")
+        except smtplib.SMTPRecipientsRefused:
+            print("The recipient address was refused by the server.")
+        except smtplib.SMTPSenderRefused:
+            print("The sender address was refused by the server.")
+        except smtplib.SMTPDataError:
+            print("The SMTP server refused the email data.")
+        except smtplib.SMTPConnectError:
+            print("Failed to connect to the SMTP server.")
+        except smtplib.SMTPException as e:
+            print(f"An SMTP error occurred: {e}")
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+        return False

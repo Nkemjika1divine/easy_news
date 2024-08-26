@@ -63,6 +63,8 @@ class BaseModel:
             del copy['__class__']
         if 'reset_token' in copy:
             del copy['reset_token']
+        if 'email_token' in copy:
+            del copy['email_token']
         if 'email_verified' in copy:
             del copy['email_verified']
         return copy
