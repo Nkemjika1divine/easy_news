@@ -50,7 +50,7 @@ async def register_user(request: Request) -> str:
     auth = Auth()
     session_id = auth.create_session(user.id)
     expiry_date = datetime.now(timezone.utc) + timedelta(days=30)
-    response = JSONResponse(content=user.to_safe_dict(), status_code=status.HTTP_201_CREATED)
+    response = JSONResponse(content=user.to_safe_dict(), status_code=status.HTTP_200_OK)
     response.set_cookie(key=environ.get("SESSION_NAME"), value=session_id, expires=expiry_date)
     return response
 
@@ -77,3 +77,27 @@ async def verify_email(request: Request) -> str:
     user.email_token = None
     storage.save()
     return JSONResponse(content="Email successfully verified", status_code=status.HTTP_200_OK)
+
+
+@user_router.post("/users/confirm_password")
+async def confirm_password(request: Request) -> str:
+    """POST method that confirms a user's password"""
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    try:
+        request_body = await request.json()
+    except Exception as error:
+        raise Bad_Request(error)
+    password = request_body.get("password", None)
+    if not password or type(password) is not str:
+        raise Bad_Request("Password missing or not a string")
+    user = request.state.current_user
+    if user.is_valid_password(password):
+        return JSONResponse(content="Password accepted", status_code=status.HTTP_200_OK)
+    raise Unauthorized("Password do not match")
+
+
+@user_router.put("/users/send_email_verification_code")
+
