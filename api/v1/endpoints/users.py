@@ -217,3 +217,26 @@ async def change_name(request: Request) -> str:
     user.name = name
     storage.save()
     return JSONResponse(content="Name updated successfully", status_code=status.HTTP_200_OK)
+
+
+@user_router.put("/users/promote/{user_id}")
+def upgrade_user_role(request: Request, user_id: str = None):
+    """PUT method for upgrading a user to admin"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not user_id:
+        raise Not_Found()
+    if not request.state.current_user:
+        raise Unauthorized()
+    current_user = request.state.current_user
+    if current_user.role == "user" or current_user.role == "admin":
+        raise Unauthorized("You are not authorized to perform this operation")
+    user = storage.search_key_value("User", "id", user_id)
+    if not user:
+        raise Not_Found("User does not exist")
+    if user[0].role == 'admin':
+        raise Unauthorized("User already an admin")
+    user[0].role = "admin"
+    storage.save()
+    return JSONResponse(content="{} promoted to admin successfully".format(user[0].name), status_code=status.HTTP_200_OK)
