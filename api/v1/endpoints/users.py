@@ -263,3 +263,17 @@ def upgrade_user_role(request: Request, user_id: str = None) -> str:
     user[0].role = "user"
     storage.save()
     return JSONResponse(content="{} demoted to user successfully".format(user[0].name), status_code=status.HTTP_200_OK)
+
+
+@user_router.delete("/users/delete_my_account")
+def delete_my_account(request: Request) -> str:
+    """DELETE method that deletes a user's account by the user"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    user = request.state.current_user
+    storage.delete(user)
+    storage.save()
+    return JSONResponse(content="User succesfully deleted", status_code=status.HTTP_200_OK)
