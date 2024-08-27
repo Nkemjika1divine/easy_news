@@ -220,7 +220,7 @@ async def change_name(request: Request) -> str:
 
 
 @user_router.put("/users/promote/{user_id}")
-def upgrade_user_role(request: Request, user_id: str = None):
+def upgrade_user_role(request: Request, user_id: str = None) -> str:
     """PUT method for upgrading a user to admin"""
     from models import storage
     if not request:
@@ -240,3 +240,26 @@ def upgrade_user_role(request: Request, user_id: str = None):
     user[0].role = "admin"
     storage.save()
     return JSONResponse(content="{} promoted to admin successfully".format(user[0].name), status_code=status.HTTP_200_OK)
+
+
+@user_router.put("/users/demote/{user_id}")
+def upgrade_user_role(request: Request, user_id: str = None) -> str:
+    """PUT method for demoting a user from admin"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not user_id:
+        raise Not_Found()
+    if not request.state.current_user:
+        raise Unauthorized()
+    current_user = request.state.current_user
+    if current_user.role == "user" or current_user.role == "admin":
+        raise Unauthorized("You are not authorized to perform this operation")
+    user = storage.search_key_value("User", "id", user_id)
+    if not user:
+        raise Not_Found("User does not exist")
+    if user[0].role == 'user':
+        raise Unauthorized("User already a simple user")
+    user[0].role = "user"
+    storage.save()
+    return JSONResponse(content="{} demoted to user successfully".format(user[0].name), status_code=status.HTTP_200_OK)
