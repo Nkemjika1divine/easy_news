@@ -10,6 +10,7 @@ from models.notification import Notification
 from models.session import Session
 from models.user import User
 from models.user_category import User_Category
+from models.user_channel import User_Channel
 from os import environ
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -27,7 +28,8 @@ classes = {
     "Notification": Notification,
     "Session": Session,
     "User": User,
-    "User_Category": User_Category
+    "User_Category": User_Category,
+    "User_Channel": User_Channel
 } # will contain all models
 
 

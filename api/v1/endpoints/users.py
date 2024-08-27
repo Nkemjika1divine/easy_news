@@ -168,4 +168,31 @@ async def change_password(request: Request) -> str:
 @user_router.get("/users/profile")
 def get_user_profile(request: Request) -> str:
     """GET method that returns the user's profile"""
-    
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    user = request.state.current_user
+    user_dict = user.to_safe_json()
+    # Get the channels the user is following and add it to the dictionary
+    user_channels = storage.search_key_value("User_Channel", "user_id", user.id)
+    if user_channels:
+        channels_user_follows = []
+        for user_channel in user_channels:
+            channels_user_follows.append(user_channel.name)
+        user_dict['channels_user_follows'] = channels_user_follows
+    else:
+        user_dict['channels_user_follows'] = None
+    # Get the categories the user is following and add it to the dictionary
+    user_dict = user.to_safe_json()
+    user_categories = storage.search_key_value("User_Category", "user_id", user.id)
+    if user_categories:
+        categories_user_follows = []
+        for user_category in user_categories:
+            categories_user_follows.append(user_category.category_name)
+        user_dict['categories_user_follows'] = categories_user_follows
+        return JSONResponse(content=user_dict, status_code=status.HTTP_200_OK)
+    else:
+        user_dict['categories_user_follows'] = None
+    return JSONResponse(content=user_dict, status_code=status.HTTP_200_OK)
