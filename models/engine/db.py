@@ -2,11 +2,14 @@
 """The Database Module"""
 from dotenv import load_dotenv
 from models.basemodel import Base
+from models.category import Category
 from models.channel import Channel
 from models.follow import Follow
+from models.news import News
 from models.notification import Notification
 from models.session import Session
 from models.user import User
+from models.user_category import User_Category
 from os import environ
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -17,11 +20,14 @@ load_dotenv()
 
 
 classes = {
+    "Category": Category,
     "Channel": Channel,
     "Follow": Follow,
+    "News": News,
     "Notification": Notification,
     "Session": Session,
-    "User": User
+    "User": User,
+    "User_Category": User_Category
 } # will contain all models
 
 
