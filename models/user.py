@@ -15,7 +15,7 @@ class User(BaseModel, Base):
     email = Column(String(100), nullable=False, unique=True)
     password = Column(String(20), nullable=False)
     reset_token = Column(String(50), nullable=True)
-    role = Column(String(10), nullable=False)
+    role = Column(String(10), nullable=False, default="user")
     email_verified = Column(String(10), nullable=False, default="no")
     email_token = Column(String(10), nullable=True)
 

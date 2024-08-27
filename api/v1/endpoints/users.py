@@ -196,3 +196,24 @@ def get_user_profile(request: Request) -> str:
     else:
         user_dict['categories_user_follows'] = None
     return JSONResponse(content=user_dict, status_code=status.HTTP_200_OK)
+
+
+@user_router.put("/users/change_name")
+async def change_name(request: Request) -> str:
+    """PUT method that changes a user's name"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    try:
+        request_body = await request.json()
+    except Exception as error:
+        raise Bad_Request(error)
+    name = request_body.get("name", None)
+    if not name or type(name) is not str or len(name) > 50:
+        raise Bad_Request("Name missing or not a string or more than 50 characters")
+    user = request.state.current_user
+    user.name = name
+    storage.save()
+    return JSONResponse(content="Name updated successfully", status_code=status.HTTP_200_OK)
