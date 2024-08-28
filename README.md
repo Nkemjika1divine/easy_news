@@ -10,3 +10,4 @@
 - `PUT /api/v1/users/promote/{user_id}`: This upgrades a user to admin and can only be done by the superuser
 - `PUT /api/v1/users/demote/{user_id}`: This demotes a user from admin and can only be done by the superuser
 - `DELETE /api/v1/users/delete_my_account`: This allows users to delete their account
+- `DELETE /api/v1/users/{user_id}`: This deletes a user's account and can only be done by admins and the superuser

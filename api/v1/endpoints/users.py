@@ -277,3 +277,24 @@ def delete_my_account(request: Request) -> str:
     storage.delete(user)
     storage.save()
     return JSONResponse(content="User succesfully deleted", status_code=status.HTTP_200_OK)
+
+
+@user_router.delete("/users/{user_id}")
+def delete_my_account(request: Request, user_id: str = None) -> str:
+    """DELETE method that deletes a user's account by the user"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not user_id:
+        raise Not_Found()
+    if not request.state.current_user:
+        raise Unauthorized()
+    current_user = request.state.current_user
+    if current_user.role == "user":
+        raise Unauthorized("You are not authorized to perform this task")
+    user = storage.search_key_value("User", "id", user_id)
+    if not user:
+        raise Not_Found("User does not exist")
+    storage.delete(user[0])
+    storage.save()
+    return JSONResponse(content="User succesfully deleted", status_code=status.HTTP_200_OK)
