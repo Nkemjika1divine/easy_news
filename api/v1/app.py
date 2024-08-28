@@ -20,7 +20,8 @@ app.include_router(user_router, prefix=api_prefix)
 
 path_list = [
              '/docs',
-             '/api/v1/users/register'
+             '/api/v1/users/register',
+             '/api/v1/categories'
              ]
 
 

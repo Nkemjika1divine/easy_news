@@ -15,3 +15,4 @@
 ### Categories
 - `POST /api/v1/categories/add`: This adds a new category to the database
 - `PUT /api/v1/categories/{category_id}`: This edits a category name
+- `GET /api/v1/categories`: This returns all the categories in the database

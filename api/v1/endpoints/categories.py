@@ -52,3 +52,18 @@ async def add_a_category(request: Request, category_id: str = None) -> str:
     category.category_name = category_name.lower()
     storage.save()
     return JSONResponse(content=f"{category_name} updated successfully", status_code=status.HTTP_200_OK)
+
+
+@categories_router.get("/categories")
+def get_all_categories(request: Request) -> str:
+    """GET method that returns all categories"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    all_categories = storage.all("Category")
+    if not all_categories:
+        raise Not_Found("No categories found")
+    category_list = []
+    for category in all_categories.values():
+        category_list.append(category.name)
+    return JSONResponse(content=category_list, status_code=status.HTTP_200_OK)
