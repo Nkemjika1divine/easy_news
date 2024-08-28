@@ -13,6 +13,7 @@
 - `DELETE /api/v1/users/{user_id}`: This deletes a user's account and can only be done by admins and the superuser
 
 ### Categories
-- `POST /api/v1/categories/add`: This adds a new category to the database
-- `PUT /api/v1/categories/{category_id}`: This edits a category name
-- `GET /api/v1/categories`: This returns all the categories in the database
+- `POST /api/v1/categories/add`: This adds a new category to the database and can only be done by admins and the superuser
+- `PUT /api/v1/categories/{category_id}`: This edits a category name and can only be done by admins and the superuser
+- `GET /api/v1/categories`: This returns all the categories in the database 
+- `DELETE /api/v1/categories/{category_id}`: This deletes a category and can only be done by admins and the superuser
