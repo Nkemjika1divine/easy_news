@@ -3,7 +3,7 @@
 from fastapi import Request
 from models.session import Session
 from os import environ
-from typing import Dict, TypeVar
+from typing import Dict, TypeVar, List
 
 
 class Auth():

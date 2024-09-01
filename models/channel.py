@@ -7,7 +7,7 @@ from sqlalchemy import Column, String
 class Channel(BaseModel, Base):
     """The Channel Model"""
     __tablename__ = "channels"
-    name = Column(String(50), nullable=False)
+    channel_name = Column(String(50), nullable=False)
     source = Column(String(50), nullable=False)
 
     def __init__(self, *args, **kwargs):

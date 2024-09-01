@@ -6,10 +6,10 @@ from fastapi.responses import JSONResponse
 from models.category import Category
 
 
-categories_router = APIRouter()
+category_router = APIRouter()
 
 
-@categories_router.post("/categories/add")
+@category_router.post("/categories/add")
 async def add_a_category(request: Request) -> str:
     """POST method that adds a new category"""
     if not request:
@@ -22,7 +22,7 @@ async def add_a_category(request: Request) -> str:
         request_body = await request.json()
     except Exception as error:
         raise Bad_Request(error)
-    category_name = request_body.get("name", None)
+    category_name = request_body.get("category_name", None)
     if not category_name or type(category_name) is not str or len(category_name) > 50:
         raise Bad_Request("category name must be a string and must not exceed 50 characters")
     category = Category()
@@ -31,7 +31,7 @@ async def add_a_category(request: Request) -> str:
     return JSONResponse(content=f"{category_name} saved successfully", status_code=status.HTTP_200_OK)
 
 
-@categories_router.put("/categories/{category_id}")
+@category_router.put("/categories/{category_id}")
 async def add_a_category(request: Request, category_id: str = None) -> str:
     """POST method that adds a new category"""
     from models import storage
@@ -50,7 +50,7 @@ async def add_a_category(request: Request, category_id: str = None) -> str:
     category = storage.search_key_value("Category", "id", category_id)
     if not category:
         raise Not_Found("Category does not exist")
-    category_name = request_body.get("name", None)
+    category_name = request_body.get("category_name", None)
     if not category_name or type(category_name) is not str or len(category_name) > 50:
         raise Bad_Request("category name must be a string and must not exceed 50 characters")
     category[0].category_name = category_name.lower()
@@ -58,7 +58,7 @@ async def add_a_category(request: Request, category_id: str = None) -> str:
     return JSONResponse(content=f"{category_name} updated successfully", status_code=status.HTTP_200_OK)
 
 
-@categories_router.get("/categories")
+@category_router.get("/categories")
 def get_all_categories(request: Request) -> str:
     """GET method that returns all categories"""
     from models import storage
@@ -73,7 +73,7 @@ def get_all_categories(request: Request) -> str:
     return JSONResponse(content=category_list, status_code=status.HTTP_200_OK)
 
 
-@categories_router.delete("/categories/{category_id}")
+@category_router.delete("/categories/{category_id}")
 def delete_a_category(request: Request, category_id: str = None) -> str:
     """POST method that adds a new category"""
     from models import storage
