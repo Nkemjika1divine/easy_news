@@ -79,3 +79,23 @@ def get_all_channels(request: Request) -> str:
     for channel in channels.values():
         channel_list.append(channel.to_dict())
     return JSONResponse(content=channel_list, status_code=status.HTTP_200_OK)
+
+
+@channel_router.delete("/channels/{channel_id}")
+def delete_channel(request: Request, channel_id: str = None) -> str:
+    """DELETE method that deletes a channel"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not channel_id:
+        raise Not_Found()
+    if not request.state.current_user:
+        raise Unauthorized()
+    if request.state.current_user.role == 'user':
+        raise Unauthorized("You are not authorized to perform this operation")
+    channel = storage.search_key_value("Channel", "id", channel_id)
+    if not channel:
+        raise Not_Found("Channel does not exist")
+    storage.delete(channel[0])
+    storage.save()
+    return JSONResponse(content="Channel successfully deleted", status_code=status.HTTP_200_OK)
