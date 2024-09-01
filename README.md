@@ -23,3 +23,6 @@
 - `PUT /api/v1/channels/edit/{channel_id}`: This method edits a channel's information and can only be done by admins and the superuser
 - `GET /api/v1/channels`: This returns all channels in the database
 - `DELETE /api/v1/channels/{channel_id}`: This deletes a channel from the database
+
+### User following channels
+- `POST /api/v1/users/channels/add`: This allows a user to start following a channel

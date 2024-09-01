@@ -12,6 +12,7 @@ channel_router = APIRouter()
 @channel_router.post("/channels/add")
 async def add_new_channel(request: Request) -> str:
     """POST method that adds a new channel"""
+    from models import storage
     if not request:
         raise Bad_Request()
     if not request.state.current_user:
@@ -24,10 +25,14 @@ async def add_new_channel(request: Request) -> str:
         raise Bad_Request(error)
     channel_name = request_body.get("channel_name", None)
     if not channel_name or type(channel_name) is not str or len(channel_name) > 50:
-        raise Bad_Request("chanel_name must be a string and must not exceed 50 characters")
+        raise Bad_Request("channel_name must be a string and must not exceed 50 characters")
+    if storage.search_key_value("Channel", "channel_name", channel_name):
+        raise Unauthorized(f"{channel_name} already exists")
     source = request_body.get("source", None)
     if not source or type(source) is not str or len(source) > 50:
         raise Bad_Request("source must be a string and must not exceed 50 characters")
+    if storage.search_key_value("Channel", "source", source):
+        raise Unauthorized(f"{source} already exists")
     channel = Channel(channel_name=channel_name, source=source)
     channel.save()
     return JSONResponse(content=channel.to_dict(), status_code=status.HTTP_200_OK)
