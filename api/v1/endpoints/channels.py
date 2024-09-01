@@ -64,4 +64,18 @@ async def edit_channel(request: Request, channel_id: str = None) -> str:
         channel[0].source = source
     storage.save()
     return JSONResponse(content="Channel updated successfully", status_code=status.HTTP_200_OK)
-        
+
+
+@channel_router.get("/channels")
+def get_all_channels(request: Request) -> str:
+    """GET method that returns all channels"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    channels = storage.all("Channel")
+    if not channels:
+        raise Not_Found("No channels found in the database")
+    channel_list = []
+    for channel in channels.values():
+        channel_list.append(channel.to_dict())
+    return JSONResponse(content=channel_list, status_code=status.HTTP_200_OK)
