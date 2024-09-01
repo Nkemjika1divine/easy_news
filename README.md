@@ -19,4 +19,5 @@
 - `DELETE /api/v1/categories/{category_id}`: This deletes a category and can only be done by admins and the superuser
 
 ### Channels
-- `POST /api/v1/channels/add`: This method adds a new channel to the database
+- `POST /api/v1/channels/add`: This method adds a new channel to the database and can only be done by admins and the superuser
+- `PUT /api/v1/channels/edit/{channel_id}`: This method edits a channel's information and can only be done by admins and the superuser
