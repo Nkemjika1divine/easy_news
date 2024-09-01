@@ -56,3 +56,21 @@ def remove_a_follow(request: Request, channel_name: str = None) -> str:
             storage.save()
             return JSONResponse(content="Channel successfully unfollowed")
     raise Unauthorized("You are not following this channel")
+
+
+@user_channel_router.get("/users/channels/follows")
+def get_channels_followed(request: Request) -> str:
+    """GET method that returns all the channels a user follows"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    user = request.state.current_user
+    user_channels = storage.search_key_value("User_Channel", "user_id", user.id)
+    if not user_channels:
+        raise Not_Found("User does not follow any channels")
+    follow_list = []
+    for user_channel in user_channels:
+        follow_list.append(user_channel.to_dict())
+    return JSONResponse(content=follow_list, status_code=status.HTTP_200_OK)
