@@ -60,7 +60,7 @@ async def edit_channel(request: Request, channel_id: str = None) -> str:
     if 'channel_name' in request_body:
         channel_name = request_body['channel_name']
         if type(channel_name) is not str or len(channel_name) > 50:
-            raise Bad_Request("chanel_name must be a string and must not exceed 50 characters")
+            raise Bad_Request("channel_name must be a string and must not exceed 50 characters")
         channel[0].channel_name = channel_name
     if 'source' in request_body:
         source = request_body['source']
