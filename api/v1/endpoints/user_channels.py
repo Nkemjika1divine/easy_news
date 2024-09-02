@@ -54,7 +54,7 @@ def remove_a_follow(request: Request, channel_name: str = None) -> str:
         if user_channel.user_id == request.state.current_user.id:
             storage.delete(user_channel)
             storage.save()
-            return JSONResponse(content="Channel successfully unfollowed")
+            return JSONResponse(content="Channel successfully unfollowed", status_code=status.HTTP_200_OK)
     raise Unauthorized("You are not following this channel")
 
 

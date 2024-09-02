@@ -34,3 +34,25 @@ async def add_new_category(request: Request) -> str:
     return JSONResponse(content="User following the category successfully", status_code=status.HTTP_200_OK)
 
 
+@user_category_router.delete("/users/categories/remove{category_name}")
+def remove_a_follow(request: Request, category_name: str = None) -> str:
+    """DELETE method that deletes a category"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not category_name:
+        raise Not_Found()
+    if not request.state.current_user:
+        raise Unauthorized()
+    category = storage.search_key_value("Category", "category_name", category_name)
+    if not category:
+        raise Not_Found(f"{category_name} does not exist")
+    user_categories = storage.search_key_value("User_Category", "category_id", category[0].id)
+    if not user_categories:
+        raise Not_Found(f"{category_name} has no followers")
+    for user_category in user_categories:
+        if user_category.user_id == request.state.current_user.id:
+            storage.delete(user_category)
+            storage.save()
+            return JSONResponse(content="Category successfully unfollowed", status_code=status.HTTP_200_OK)
+    raise Not_Found("You are not following this category")

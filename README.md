@@ -28,3 +28,7 @@
 - `POST /api/v1/users/channels/add`: This allows a user to start following a channel
 - `DELETE /api/v1/users/channels/remove/{channel_name}`: This stops a user from following a channel
 - `GET /api/v1/users/channels/follows`: This returns all the channels a user follows
+
+### User following categories
+- `POST /api/v1/users/categories/add`: This allows a user to follow a news category
+- `DELETE /api/v1/users/categories/remove{category_name}`: This stops a user from following a category of news
