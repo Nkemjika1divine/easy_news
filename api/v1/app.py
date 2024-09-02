@@ -2,6 +2,7 @@
 """Module deploying our Easy News FastAPI app"""
 from api.v1.endpoints.categories import category_router
 from api.v1.endpoints.channels import channel_router
+from api.v1.endpoints.user_categories import user_category_router
 from api.v1.endpoints.user_channels import user_channel_router
 from api.v1.endpoints.users import user_router
 from api.v1.error_handlers import Unauthorized, Forbidden
@@ -21,6 +22,7 @@ api_prefix = "/api/v1"
 app.include_router(user_router, prefix=api_prefix)
 app.include_router(category_router, prefix=api_prefix)
 app.include_router(channel_router, prefix=api_prefix)
+app.include_router(user_category_router, prefix=api_prefix)
 app.include_router(user_channel_router, prefix=api_prefix)
 
 

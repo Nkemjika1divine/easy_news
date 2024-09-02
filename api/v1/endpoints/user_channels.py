@@ -23,7 +23,7 @@ async def add_channel_to_user(request: Request) -> str:
         raise Bad_Request(error)
     channel_name = request_body.get("channel_name", None)
     if not channel_name or type(channel_name) is not str or len(channel_name) > 50:
-        raise Bad_Request("chanel_name must be a string and must not exceed 50 characters")
+        raise Bad_Request("channel_name must be a string and must not exceed 50 characters")
     channel = storage.search_key_value("Channel", "channel_name", channel_name)
     if not channel:
         raise Not_Found(f"{channel_name} does not exist")
