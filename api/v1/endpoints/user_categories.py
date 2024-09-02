@@ -56,3 +56,21 @@ def remove_a_follow(request: Request, category_name: str = None) -> str:
             storage.save()
             return JSONResponse(content="Category successfully unfollowed", status_code=status.HTTP_200_OK)
     raise Not_Found("You are not following this category")
+
+
+@user_category_router.get("/users/categories/all")
+def get_all_categories_followed(request: Request) -> str:
+    """GET method that returns all the categories a user follows"""
+    from models import storage
+    if not request:
+        raise Bad_Request()
+    if not request.state.current_user:
+        raise Unauthorized()
+    user = request.state.current_user
+    user_categories = storage.search_key_value("User_Category", "user_id", user.id)
+    if not user_categories:
+        raise Not_Found("User does not follow any categories")
+    follow_list = []
+    for user_category in user_categories:
+        follow_list.append(user_category.to_dict())
+    return JSONResponse(content=follow_list, status_code=status.HTTP_200_OK)
