@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from models.basemodel import Base
 from models.category import Category
 from models.channel import Channel
-from models.follow import Follow
 from models.news import News
 from models.notification import Notification
 from models.session import Session
@@ -23,7 +22,6 @@ load_dotenv()
 classes = {
     "Category": Category,
     "Channel": Channel,
-    "Follow": Follow,
     "News": News,
     "Notification": Notification,
     "Session": Session,
