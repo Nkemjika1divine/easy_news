@@ -67,7 +67,7 @@ class User(BaseModel, Base):
         try:
             yag = yagmail.SMTP('placerssocials@gmail.com', 'plvp oyzo qjmy eonv')
             subject = "OTP Verification"
-            content = f"Hi {self.name}...\n\nYour verification token is {self.reset_token}.\n\nUse this to validate your email."
+            content = f"Hi {self.name}...\n\nYour verification token is {self.email_token}.\n\nUse this to validate your email."
             
             yag.send(to=self.email, subject=subject, contents=content)
             return True
